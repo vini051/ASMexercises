@@ -1,0 +1,40 @@
+#FAC - T01 - Trabalho 02
+#180028847
+#B_Maior_Numero
+
+.data
+newline: .asciz "\n"
+
+.text
+	li a7, 5			#codigo ler inteiro
+	ecall				#realiza a leitura
+	add s2, x0, a0			#salva o numero em s2 (sera a quantidade de iteracoes)
+	addi s3, x0, 0			#inicializa s3 em 0 (s3 sera i = 0)
+	li s1, -2147483638		#inicializa s1 como o menor inteiro possível com 32 bits
+	
+	for:				#label do laço)
+	bge s3, s2, print_exit		#compara se s3>=s2 (ou seja, se i>=n, n é o numero lido da quantidade de iteracoes)
+					#quando i atingir o valor do numero lido, o programa irá encerrar
+	addi s3, s3, 1			#incrementa o valor de i
+
+	li a7, 5			#codigo para ler inteiro
+	ecall				#realiza a leitura
+	add s4, a0, x0			#salva o numero lido em s4
+	
+	bge s4, s1, maior		#compara s4 > s1, caso true, braqueia para "maior"
+	
+	j for				#garante que o laço continue
+	
+	print_exit:			#printa o maior numero e encerra
+	add a0, s1, x0			#carrega s1 (resultado do maior numero) em a0 para printar
+	li a7, 1			#codigo print Int
+	ecall				#printa
+	li a7, 4			#codigo para printar string
+	la a0, newline			#carrega newline para ser printado
+	ecall				#printa quebra de linha
+	li a7, 10			#codigo para encerrar com codigo 0
+	ecall				#encerra
+	
+	maior:
+	add s1, s4, x0			#salva s4 (maior que s1 na verificacao) em s1, agora s1 é o maior numero
+	j for				#retorna ao laço

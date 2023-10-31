@@ -1,0 +1,113 @@
+#FAC - T01 - Trabalho 02
+#180028847
+#A - operações básicas
+
+.text
+	
+	li a7, 5			#codigo para ler inteiro carregado em a7
+	ecall				#le o inteiro
+	add, s1, x0, a0			#salva o inteiro lido em s1
+	ecall				#como o codigo para ler inteiro continua carregado em a7, vai ler novamente outro inteiro
+	add s2, x0, a0			#salva o segundo int lido em s2
+	ecall				#le um terceiro inteiro
+	add s3, x0, a0			#salva o terceiro numero em s3
+	
+	#SOMA
+	add t1, s1, s2			#t1 recebe a soma dos dois numeros lidos
+	la a0, ADD			#carrega a string ADD em a0
+	jal resultado			#chama funcao que imprime o resultado e retorna 
+	
+	#SUBTRAÇÃO
+	sub t1, s1, s2			#t1 = s1 - s2
+	la a0, SUB			#carrega string SUB em a0
+	jal resultado			#chama a funcao que printa o resultado e retorna
+	
+	#AND
+	and t1, s1, s2			#and bit-a-bit de s1 com s2, salva em t1
+	la a0, AND			#carrega string AND em a0
+	jal resultado			#funcao que printa o resultado
+	
+	#OR
+	or t1, s1, s2			#or bit-a-bit de s1 e s2, salva em t1
+	la a0, OR			#carrega string OR em a0
+	jal resultado			#printa resultado
+	
+	#XOR
+	xor t1, s1, s2			#xor bit a bit de s1 e s2, salva em t1
+	la a0, XOR			#carrega string XOR em a0
+	jal resultado			#printa resultado
+	
+	#MASK
+	andi t2, s3, 31			#t2 = and s3 com 31 (immediate) ou seja, faz uma mascara
+	add t1, x0, t2			#t1 = t2; fiz isso para utilizar o valor de t2 separadamente sem sobrescrever em t1, ja que estou usando t1 para os resultados das operações
+	la a0, MASK			#carrega string MASK
+	jal resultado			#printa
+	
+	#SLL
+	sll t1, s1, t2			#shifta s1 t2 bits à esquerda (sendo t2 a mascara)
+	la a0, SLL			#carrega string SLL em a0, note que esse print tem um valor dinamico (t2) no meio, entao tive que quebrar a string
+					#ao inves de chamar a funcao resultado, dessa vez vou precisar fazer manualmente [primeiraParteDaString]+[valor]+[segundaParteString]
+	li a7, 4			#codigo printar string
+	ecall				#printa
+	li a7, 1			#codigo print Int
+	add a0, x0, t2			#valor da mascara em a0
+	ecall				#printa
+	li a7, 4			#codigo printar string
+	la a0, fecha			#string com a segunda parte do parêntese de SLL/SRL
+	ecall				#printa
+	li a7, 1			#codigo print int
+	add a0, x0, t1			#printa o resultado da operação
+	ecall				#printa
+	li a7, 4			#codigo printar string
+	la a0, new_line			#quebra de linha
+	ecall				#printa
+	
+	#SRL
+	srl t1, s2, t2			#shifta s2 t2 bits à direita (t2 = mascara)
+	la a0, SRL			#carrega string SRL em a0, note que esse print tem um valor dinamico (t2) no meio, entao tive que quebrar a string
+					#ao inves de chamar a funcao resultado, dessa vez vou precisar fazer manualmente [primeiraParteDaString]+[valor]+[segundaParteString]
+	li a7, 4			#codigo printar string
+	ecall				#printa
+	li a7, 1			#codigo print Int
+	add a0, x0, t2			#resultado da mascara em a0 para ser printado
+	ecall				#printa
+	li a7, 4			#codigo printar string
+	la a0, fecha			#string com a segunda parte do parêntese de SLL/SRL
+	ecall				#printa
+	li a7, 1			#codigo print Int
+	add a0, x0, t1			#resultado do SRL em a0
+	ecall				#printa o resultado do SRL
+	li a7, 4			#codigo printar string
+	la a0, new_line			#quebra de linha
+	ecall				#printa
+		
+	#exit
+	li a7, 10			#codigo para encerrar o programa com codigo 0
+	ecall				#encerra
+
+	resultado:
+	li a7, 4			#codigo para printar string
+	ecall				#printa string carregada previamente (referente a cada operação)
+	li a7, 1			#codigo para printar int
+	add a0, x0, t1			#carrega t1 (resultado) em a0
+	ecall				#printa resultado
+	jal a5, newline			#chama funcao para printar quebra de linha e define o retorno em a5
+	jr ra				#apos retornar da funcao newline retorna para a funcao chamadora original (por isso usei a5 antes, para nao sobrescrever ra)
+		
+	newline:
+	la a0, new_line			#carrega "\n" em a0
+	li a7, 4			#codigo para printar string
+	ecall				#printa quebra de linha
+	jr a5				#retorna para a5 (funcao resultado)
+	
+.data
+ADD: .asciz "ADD: "
+SUB: .asciz "SUB: "
+AND: .asciz "AND: "
+OR: .asciz "OR: "
+XOR: .asciz "XOR: "
+MASK: .asciz "MASK: "
+SLL: .asciz "SLL("
+SRL: .asciz "SRL("
+fecha: .asciz "): "
+new_line: .asciz "\n"

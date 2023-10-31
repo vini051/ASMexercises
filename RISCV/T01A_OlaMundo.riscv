@@ -1,0 +1,14 @@
+#Fundamentos de Arquitetura de Computadores T01 - Trabalho 01
+#Aluno Vinícius Gabriel R S Brito | Matrícula 180028847
+#A - Ola mundo
+
+.text						#seção do código que será montada
+	la a0, olamundo				#carrega o endereço da variável `olamundo` em a0
+	li a7, 4					#carrega o código de print em a7
+	ecall					#faz a chamada de sistema com o código de print carregado
+	
+	li a7, 93				#carrega o código de exit em a7
+	ecall					#faz a chamada de sistema com o código de exit carregado
+
+.data						#seção de dados, onde serão declaradas as "variáveis"
+olamundo: .ascii "Ola Mundo\n"			#criado um label para uma string ascii que contem o que está entre aspas
